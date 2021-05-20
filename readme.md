@@ -105,6 +105,24 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 </div>
 
 ### 8
+
+> Enumerarea schemelor relaționale corespunzătoare diagramei conceptuale proiectate la punctul 7.
+
+* client(cnp, first_name, last_name, birthday, age)
+* employee(cnp, first_name, last_name, started_at, salary, is_active)
+* working_schedule(cnp, start_at, end_at)
+* doctor(cnp, specialization)
+* guardian(cnp, has_qualification)
+* receptionist(cnp, knows_foreign_languages)
+* section(name, nr_rooms)
+* room(section_name, room_number, nr_beds)
+* doctor_room(cnp, section_name, room_number, start_at, end_at)
+* medication(id, name, provider_name, weight)
+* prescription(id, doctor_id, client_id, title)
+* prescription_medication(prescription_id, medication_id)
+* diagnosis(doctor_id, client_id, title, description)
+* appointment(doctor_id, client_id, section_name, room_number, start_at, end_at)
+
 ### 9
 ### 10
 ### 11
