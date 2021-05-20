@@ -71,9 +71,22 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 
 > Descrierea atributelor, incluzând tipul de date și eventualele constrângeri, valori implicite, valori posibile ale atributelor.
 
-* SECTION.NAME
-* appointment.section_name
+`section.name` - acest atribut este si cheia primara a tabelului
 
+`appointment.client_id` - pacientul care s-a programat
+`appointment.doctor_id` - doctorul la care s-a programat pacientul
+`appointment.section_name` - numele sectiei in care are loc programarea
+`appointment.room_number` - numele cabinetului din sectia in care are loc programarea; alaturi de `section_name`, `room_number` reprezinta cheia primara din tabelul `room`
+
+`prescription.id` - id-ul prescriptiei
+`prescription.doctor_id` - id-ul doctorului care a creat prescriptia
+`prescription.client_id` - id-ul clientului pentru care s-a creat prescriptia
+`prescription_medication.medication_id` - id-ul medicamentului care apare in prescriptia cu id-ul `prescription_id`
+`prescription_medication.prescription_id` - id-ul prescriptiei
+
+`diagnosis.doctor_id` - id-ul doctorului care a emis diagnosticul
+`diagnosis.client_id` - id-ul clientului care a primit diagnosticul
+`diagnosis.date` - data la care s-a emis diagnosticul; acest atribut, combinat cu cele doua de mai sus, formeaza cheia primara
 
 ### 6
 
