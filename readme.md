@@ -124,6 +124,20 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 * appointment(doctor_id, client_id, section_name, room_number, start_at, end_at)
 
 ### 9
+
+> Realizarea normalizării până la forma normală 3 (FN1-FN3).
+
+Schema este in FN1:
+* de-a lungul fiecarei coloane exista valori compuse dintr-un singur *cuvant*
+
+Schema este in FN2:
+* este in FN1
+* nu exista **chei partiale**, adica atribute care sa depinda de o *parte* a cheii candidat; un exemplu de astfel de situatie ar fi cea in care in tabelul `prescription_medication` am avea, pe langa cele 2 *foreign keys*(`prescription_id`si `medication_id`), si atributul `weight`, care s-ar referi la greutatea unui medicament
+
+Schema este in FN3:
+* este in FN2
+* nu exista **dependinte tranzitive**(daca `A -> B` si `B -> C`, atunci `A -> C`); un exemplu ar fi cazul in care in tabelul `prescription_medication` ar fi avut si atributul `provider_name`(furnizorul unui anume medicament); concret, `A` este `prescription_id`, `B` este `medication_id` si `C` este `provider_name`
+
 ### 10
 ### 11
 ### 12
