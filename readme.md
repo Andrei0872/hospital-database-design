@@ -97,6 +97,13 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 </div>
 
 ### 7
+
+> Realizarea diagramei conceptuale corespunzătoare diagramei entitate-relație proiectate la punctul 6. Diagrama conceptuală obținută trebuie să conțină minimum 6 tabele (fără considerarea subentităților), dintre care cel puțin un tabel asociativ.
+
+<div style="text-align: center;">
+  <img src="./img/second.jpg">
+</div>
+
 ### 8
 ### 9
 ### 10
