@@ -1,13 +1,6 @@
-# Hospital Database Design
+# Proiect Baze de Date - Hospital Database Design
 
-## Testing out
-
-* docker-compose installed
-* add how to run docker-compose & what comes after
-
-## Tasks
-
-### 1
+### 1.
 
 > Descrierea modelului real, a utilității acestuia și a regulilor de funcționare.
 
@@ -15,7 +8,7 @@ Acest proiect urmareste realizarea design-ului unei baze de date a unui spital o
 
 In ceea ce priveste organizarea, spitalul este impartit in sectiuni, iar fiecare sectiune exista un numar de cabinete in care doctorii isi desfasoara activitatea. In afara de doctori, in spital exista si gardieni si receptionisti. Doctorii pot face prescriptii si pot emite diagnostice pentru clientii spitalului.
 
-### 2
+### 2.
 
 > Prezentarea constrângerilor (restricții, reguli) impuse asupra modelului.
 
@@ -27,66 +20,66 @@ Pentru o programare trebuie sa se cunoasca ID-ul doctorului si ID-ul pacientului
 
 Pentru fiecare angajat al spitalului se cunoaste programul sau de lucru.
 
-### 3
+### 3.
 
 > Descrierea entităților, incluzând precizarea cheii primare.
 
-EMPLOYEE(id) - un angajat al spitalului, iar acesta poate fi de 3 tipuri: doctor, gardian, receptionist; pentru fiecare tip mentionat anterior exista un tabel
+* EMPLOYEE(id) - un angajat al spitalului, iar acesta poate fi de 3 tipuri: doctor, gardian, receptionist; pentru fiecare tip mentionat anterior exista un tabel
 
-WORKING_SCHEDULE(employee_id) - programul de lucru al angajatilor; este un 'weak entity' intrucat depinde de entitatea 'EMPLOYEE'
+* WORKING_SCHEDULE(employee_id) - programul de lucru al angajatilor; este un *weak entity* intrucat depinde de entitatea `EMPLOYEE`
 
-CLIENT(cliend_id) - un client al spitalului
+* CLIENT(cliend_id) - un client al spitalului
 
-SECTION(name) - o sectie a spitalului; s-a ales numele sectiei drept cheie primara
+* SECTION(name) - o sectie a spitalului; s-a ales numele sectiei drept cheie primara
 
-ROOM(section_id, room_number) - un cabinet al unei sectii; este o cheie primara compusa, 'room_number' avand valori de la 1 la 'N', unde 'N' este numarul de cabinete dintr-o sectie; 'section_id' este cheia primara din tabelul 'SECTION'
+* ROOM(section_name, room_number) - un cabinet al unei sectii; este o cheie primara compusa, `room_number` avand valori de la 1 la `N`, unde `N` este numarul de cabinete dintr-o sectie; `section_name` este cheia primara din tabelul `SECTION`
 
-MEDICATION(id) - un medicament; medicamentele apar in prescriptiile emise de medici
+* MEDICATION(id) - un medicament; medicamentele apar in prescriptiile emise de medici
 
-PRESCRIPTION(doctor_id, client_id, date) - o prescriptie; este facuta de catre un medic pentru un pacient; cheia primara este compusa deoarece o prescriptie este strans legata de medicul care a emis-o; cheia partiala este asadar 'date'(data la care s-a facut prescriptia), pentru a asigura unicitatea
+* PRESCRIPTION(prescription_id, doctor_id, client_id) - o prescriptie; este facuta de catre un medic pentru un pacient
 
-DIAGNOSIS(doctor_id, client_id, date) - diagnosticul data de un doctor pentru un pacient, dar pentru ca acelasi medic poate da mai multe diagnostice aceluiasi pacient, este nevoie de o cheie partiala, 'date', pentru a asigura uncitatea
+* DIAGNOSIS(doctor_id, client_id, date) - diagnosticul dat de un doctor pentru un pacient, dar pentru ca acelasi medic poate da mai multe diagnostice aceluiasi pacient, este nevoie de o cheie partiala, `date`, pentru a asigura uncitatea
 
-### 4
+### 4.
 
 > Descrierea relațiilor, incluzând precizarea cardinalității acestora.
 
-Intre tabelul 'EMPLOYEE' si tabelele 'DOCTOR', 'GUARDIAN' si 'RECEPTIONIST' exista cate o relatie de tipul 'ISA'.
+Intre tabelul `EMPLOYEE` si tabelele `DOCTOR`, `GUARDIAN` si `RECEPTIONIST` exista cate o relatie de tipul *ISA*.
 
-Un **client** se poate programa la mai multi **medici** si un **medic** poate avea in grija mai multi **pacienti**('M-N').
+Un **client** se poate programa la mai multi **medici** si un **medic** poate avea in grija mai multi **pacienti**(`'M-N'`).
 
-Un **doctor** poate lucra intr-un singur **cabinet**, dar un **cabinet** poate avea mai multi **doctori**('1-N').
+Un **doctor** poate lucra intr-un singur **cabinet**, dar un **cabinet** poate avea mai multi **doctori**(`'1-N'`).
 
-Un **cabinet** apartine unei **singure sectii**, dar o **sectie** poate contine mai multe **cabinete**('1-N').
+Un **cabinet** apartine unei **singure sectii**, dar o **sectie** poate contine mai multe **cabinete**(`'1-N'`).
 
-Un **doctor** poate emite un numar nelimitat de **prescriptii**, dar o **prescriptie** poate fi emisa doar de un singur **doctor**('1-N').
-Un **doctor** poate emite **prescriptii mai multor pacienti**, iar un **pacient** poate primi **prescriptii de la mai multi medici**('M-N').
+Un **doctor** poate emite un numar nelimitat de **prescriptii**, dar o **prescriptie** poate fi emisa doar de un singur **doctor**(`'1-N'`).
+Un **doctor** poate emite **prescriptii mai multor pacienti**, iar un **pacient** poate primi **prescriptii de la mai multi medici**(`'M-N'`).
 
-Un **medicament** poate apartine mai multor **prescriptii**, iar o **prescriptie** poate contine mai multe **medicamente**('M-N').
+Un **medicament** poate apartine mai multor **prescriptii**, iar o **prescriptie** poate contine mai multe **medicamente**(`'M-N'`).
 
-Un **doctor** poate emite mai multe **diagnostice**, dar un **diagnostic** este emis doar de un singur **medic**('1-M').
-Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient** poate primi **diagnostice de la mai multi medici**('M-N').
+Un **doctor** poate emite mai multe **diagnostice**, dar un **diagnostic** este emis doar de un singur **medic**(`'1-M'`).
+Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient** poate primi **diagnostice de la mai multi medici**(`'M-N'`).
 
-### 5
+### 5.
 
 > Descrierea atributelor, incluzând tipul de date și eventualele constrângeri, valori implicite, valori posibile ale atributelor.
 
-`section.name` - acest atribut este si cheia primara a tabelului
+* `section.name` - acest atribut este si cheia primara a tabelului
 
-`appointment.client_id` - pacientul care s-a programat
-`appointment.doctor_id` - doctorul la care s-a programat pacientul
+* `appointment.client_id` - pacientul care s-a programat
+* `appointment.doctor_id` - doctorul la care s-a programat pacientul
 
-`prescription.id` - id-ul prescriptiei
-`prescription.doctor_id` - id-ul doctorului care a creat prescriptia
-`prescription.client_id` - id-ul clientului pentru care s-a creat prescriptia
-`prescription_medication.medication_id` - id-ul medicamentului care apare in prescriptia cu id-ul `prescription_id`
-`prescription_medication.prescription_id` - id-ul prescriptiei
+* `prescription.id` - id-ul prescriptiei
+* `prescription.doctor_id` - id-ul doctorului care a creat prescriptia
+* `prescription.client_id` - id-ul clientului pentru care s-a creat prescriptia
+* `prescription_medication.medication_id` - id-ul medicamentului care apare in prescriptia cu id-ul `prescription_id`
+* `prescription_medication.prescription_id` - id-ul prescriptiei
 
-`diagnosis.doctor_id` - id-ul doctorului care a emis diagnosticul
-`diagnosis.client_id` - id-ul clientului care a primit diagnosticul
-`diagnosis.date` - data la care s-a emis diagnosticul; acest atribut, combinat cu cele doua de mai sus, formeaza cheia primara
+* `diagnosis.doctor_id` - id-ul doctorului care a emis diagnosticul
+* `diagnosis.client_id` - id-ul clientului care a primit diagnosticul
+* `diagnosis.date` - data la care s-a emis diagnosticul; acest atribut, combinat cu cele doua de mai sus, formeaza cheia primara
 
-### 6
+### 6.
 
 > Realizarea diagramei entitate-relație corespunzătoare descrierii de la punctele 3-5.
 
@@ -94,7 +87,7 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
   <img src="./img/erd.jpg">
 </div>
 
-### 7
+### 7.
 
 > Realizarea diagramei conceptuale corespunzătoare diagramei entitate-relație proiectate la punctul 6. Diagrama conceptuală obținută trebuie să conțină minimum 6 tabele (fără considerarea subentităților), dintre care cel puțin un tabel asociativ.
 
@@ -102,7 +95,7 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
   <img src="./img/second2.jpg">
 </div>
 
-### 8
+### 8.
 
 > Enumerarea schemelor relaționale corespunzătoare diagramei conceptuale proiectate la punctul 7.
 
@@ -121,7 +114,7 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 * diagnosis(doctor_id, client_id, title, description)
 * appointment(doctor_id, client_id, section_name, room_number, start_at, end_at)
 
-### 9
+### 9.
 
 > Realizarea normalizării până la forma normală 3 (FN1-FN3).
 
@@ -136,13 +129,13 @@ Schema este in FN3:
 * este in FN2
 * nu exista **dependinte tranzitive**(daca `A -> B` si `B -> C`, atunci `A -> C`); un exemplu ar fi cazul in care in tabelul `prescription_medication` ar fi avut si atributul `provider_name`(furnizorul unui anume medicament); concret, `A` este `prescription_id`, `B` este `medication_id` si `C` este `provider_name`
 
-### 10
+### 10.
 
 > Crearea tabelelor în SQL și inserarea de date coerente în fiecare dintre acestea (minimum 5 înregistrări în fiecare tabel neasociativ; minimum 10 înregistrări în tabelele asociative).
 
 Link-ul catre liniile relevante din fisierul SQL poate fi gasit [aici](https://github.com/Andrei0872/hospital-database-design/blob/master/db/hospital.sql#L126-L269).
 
-### 11
+### 11.
 
 > Formulați în limbaj natural și implementați 5 cereri SQL complexe ce vor utiliza, în ansamblul lor, următoarele elemente: ...
 
@@ -331,7 +324,7 @@ where c.cnp = (
   <img src="./img/11.5.png">
 </div>
 
-### 12
+### 12.
 
 > Implementarea a 3 operații de actualizare sau suprimare a datelor utilizând subcereri.
 
@@ -406,7 +399,7 @@ rollback;
   <img src="./img/12.3.png">
 </div>
 
-### 13
+### 13.
 
 > Crearea unei secvențe ce va fi utilizată în inserarea înregistrărilor în tabele (punctul 10).
 
@@ -450,7 +443,7 @@ call insertMeds();
   <img src="./img/13.3.png">
 </div>
 
-### 14
+### 14.
 
 > Crearea unei vizualizări compuse. Dați un exemplu de operație LMD permisă pe vizualizarea respectivă și un exemplu de operație LMD nepermisă.
 
