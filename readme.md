@@ -332,5 +332,79 @@ where c.cnp = (
 </div>
 
 ### 12
+
+> Implementarea a 3 operații de actualizare sau suprimare a datelor utilizând subcereri.
+
+#### Operatia 1
+
+```sql
+/*
+Sa se mareasca salariul doctorilor cu 10%.
+*/
+update employee e
+set e.salary = (e.salary + 10/100 * e.salary)
+where (
+	select exists(select * from doctor d where d.cnp = e.cnp)
+);
+```
+
+<div style="text-align: center;">
+  <img src="./img/12.1.png">
+</div>
+
+#### Operatia 2
+
+```sql
+/*
+Sa se dea concediu(`employee.is_active = 0`) medicilor care au dat cel putin 2 diagnostice.
+*/
+
+begin;
+
+update employee e
+set e.is_active = 0
+where (
+	select count(d.doctor_id) as 'diagnostics_count'
+    from diagnosis d
+    where d.doctor_id = e.cnp
+) >= 2;
+
+select * from employee;
+
+rollback;
+```
+
+<div style="text-align: center;">
+  <img src="./img/12.2.png">
+</div>
+
+#### Operatia 3
+
+```sql
+/*
+Sa se anuleze programarile pentru pacientii care nu au inca varsta majoratului.
+*/
+begin;
+
+select * from appointment;
+
+delete
+from appointment a
+where a.client_id in (
+	select c.cnp
+	from client c
+	where age < 18
+)
+;
+
+select * from appointment;
+
+rollback;
+```
+
+<div style="text-align: center;">
+  <img src="./img/12.3.png">
+</div>
+
 ### 13
 ### 14
