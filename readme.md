@@ -1,5 +1,30 @@
 # Proiect Baze de Date - Hospital Database Design
 
+
+## Setting up
+
+***Prerequisite**: you should have [Docker Compose](https://docs.docker.com/compose/) installed.*
+
+All you have to do is to type the following command from the root directory of this project:
+
+```bash
+docker-compose up
+```
+
+If things go south and you want to give the containers a *fresh restart*, you could try these commands:
+
+```bash
+# WARNING: this will remove all the stopped containers, so you might want to choose another filter.
+docker container rm $(docker ps -a -f status='exited' -q) \
+  && docker volume rm hospital-database-design_database-hospital
+
+docker-compose up --force-recreate --build
+```
+
+---
+
+## Tasks
+
 ### 1.
 
 > Descrierea modelului real, a utilității acestuia și a regulilor de funcționare.
