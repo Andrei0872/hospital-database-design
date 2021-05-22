@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: hospital
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - database-hospital:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - db-hospital
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: example
+    networks:
+      - db-hospital
+
+volumes:
+  database-hospital:
+  
+networks:
+  db-hospital:
+    driver: bridge
