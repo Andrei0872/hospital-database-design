@@ -451,3 +451,30 @@ call insertMeds();
 </div>
 
 ### 14
+
+> Crearea unei vizualizări compuse. Dați un exemplu de operație LMD permisă pe vizualizarea respectivă și un exemplu de operație LMD nepermisă.
+
+```sql
+create or replace view nightShiftEmployees as (
+    select *
+    from employee e
+    where (
+        select exists (
+            select *
+            from working_schedule ws
+            where 
+                ws.cnp = e.cnp
+                and ws.start_at = '20:00'
+                and ws.end_at = '08:00'
+        )
+    )
+);
+
+select * from nightShiftEmployees;
+
+delete from nightShiftEmployees where cnp = 'EE999';
+```
+
+<div style="text-align: center;">
+  <img src="./img/14.png">
+</div>
