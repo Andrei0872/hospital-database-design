@@ -75,8 +75,6 @@ Un **doctor** poate emite **diagnostice mai multor pacienti**, iar un **pacient*
 
 `appointment.client_id` - pacientul care s-a programat
 `appointment.doctor_id` - doctorul la care s-a programat pacientul
-`appointment.section_name` - numele sectiei in care are loc programarea
-`appointment.room_number` - numele cabinetului din sectia in care are loc programarea; alaturi de `section_name`, `room_number` reprezinta cheia primara din tabelul `room`
 
 `prescription.id` - id-ul prescriptiei
 `prescription.doctor_id` - id-ul doctorului care a creat prescriptia
@@ -145,6 +143,194 @@ Schema este in FN3:
 Link-ul catre liniile relevante din fisierul SQL poate fi gasit [aici](https://github.com/Andrei0872/hospital-database-design/blob/master/db/hospital.sql#L126-L269).
 
 ### 11
+
+> Formulați în limbaj natural și implementați 5 cereri SQL complexe ce vor utiliza, în ansamblul lor, următoarele elemente: ...
+
+#### Cererea 1
+
+```sql
+/*
+ Afisati numele complet al doctorilor, numele complet al pacientilor aferenti care au primit prescriptii si numarul de medicamente din fiecare prescriptie, doar daca
+ acest numar este mai mare strict decat 2.
+ 
+ Obiective atinse: 
+  • operație join pe cel puțin 4 tabele
+  • grupări de date, funcții grup, filtrare la nivel de grupuri
+  • utilizarea a cel puțin 1 bloc de cerere (clauza WITH)
+*/
+with situatie as (
+    select 
+		concat(e.first_name, ' ', e.last_name) as 'Medic',
+    	concat(c.first_name, ' ', c.last_name) as 'Pacient',
+		count(pm.medication_id) as 'Numar medicamente'
+    from doctor d
+	-- Obtinem numele si prenumele doctorului
+    join employee e
+        on e.cnp = d.cnp
+	-- Luam toate prescriptiile facute de un doctor
+    join prescription p
+        on p.doctor_id = d.cnp
+    -- Pentru fiecare prescriptie, luam si ce medicamente contine
+    join prescription_medication pm
+        on pm.prescription_id = p.id
+    -- Obtinem numele si prenumele clientului
+    join client c
+        on c.cnp = p.client_id
+    group by doctor_id, client_id, p.id
+)
+
+select * from situatie where `Numar medicamente` > 2;
+```
+
+<div style="text-align: center;">
+  <img src="./img/11.1.png">
+</div>
+
+#### Cererea 2
+
+```sql
+/*
+Selectati pacientii care au exact o singura programare facuta, alaturi de numele complet al doctorului la care s-a facut programarea.
+Rezultatele vor fi afisate in ordine alfabetica, in functie de numele si prenumele pacientului.
+
+Obiective atinse:
+	• ordonări
+	• subcereri sincronizate în care intervin cel puțin 3 tabele
+*/
+select 
+	c.first_name as 'First Name',
+    c.last_name as 'Last name',
+    c.age as 'Varsta pacient',
+    concat(e.first_name, ' ', e.last_name) as 'Medic'
+from client c
+join appointment a
+	on a.client_id = c.cnp
+join employee e
+	on e.cnp = a.doctor_id
+where (
+	select count(*)
+    from appointment a
+    where a.client_id = c.cnp
+) = 1
+order by c.last_name asc, c.first_name asc;
+```
+
+
+<div style="text-align: center;">
+  <img src="./img/11.2.png">
+</div>
+
+#### Cererea 3
+
+```sql
+/*
+Afisati, pentru medicii care nu au salariul maxim, numele complet al acestora, salariul, vechimea in spital si daca medicul respectiv este cardiolog sau hematolog.
+
+Obiective atinse:
+	• subcereri nesincronizate în care intervin cel puțin 3 tabele
+    • 2 funcții pe date calendaristice
+    • CASE, IF
+    • 2 funcții pe șiruri de caractere
+*/
+with 
+	doctors as (
+        select e.*, d.specialization
+        from employee e
+        join doctor d
+        	on d.cnp = e.cnp
+    )
+select 
+	concat(d.first_name, ' ', d.last_name) as 'Full name',
+    d.salary,
+    concat(
+		year(CURRENT_DATE) - year(d.started_at),
+		' years',
+        case
+        	when month(CURRENT_DATE) - month(d.started_at) = 0 then ''
+        	else concat(', ', month(CURRENT_DATE) - month(d.started_at), ' months')
+		end
+	) as 'Seniority',
+    if (
+    	lower(d.specialization) REGEXP 'cardiology|hematology',
+        'Da',
+        'Nu'
+    ) as `Cardiologist or Hematologist`
+from doctors d
+where d.salary < (select max(salary) from doctors);
+```
+
+<div style="text-align: center;">
+  <img src="./img/11.3.png">
+</div>
+
+#### Cererea 4
+
+```sql
+/*
+Afisati pacientii cu numar maxim de diagnostice primite.
+*/
+
+with 
+	clientNrDiagnosis as (
+        select count(*) as 'count'
+        from diagnosis d
+        group by d.client_id
+    ),
+    nrMaxClientDiagnosis as (
+    	select max(count) as 'max_count'
+        from clientNrDiagnosis
+    )
+
+select 
+	c.first_name,
+    c.last_name
+from client c
+where (
+	select count(*)
+    from diagnosis d
+    where d.client_id = c.cnp
+) = (select * from nrMaxClientDiagnosis);
+```
+
+<div style="text-align: center;">
+  <img src="./img/11.4.png">
+</div>
+
+#### Cererea 5
+
+```sql
+/*
+Afisati un pacient care a avut de cumparat cele mai multe medicamente de pe urma prescriptiilor.
+Se va afisa si acel numar maxim.
+*/
+
+with clientsNrMedsMap as (
+    select 
+        count(pm.medication_id) as 'nr_meds',
+        c.cnp as 'client_cnp'
+    from client c
+    join prescription p
+        on p.client_id = c.cnp
+    join prescription_medication pm
+        on pm.prescription_id = p.id
+    group by c.cnp
+)
+select 
+	c.first_name,
+    c.last_name,
+    (select max(nr_meds) from clientsNrMedsMap) as 'Numar maxim de medicamente cumparate'
+from client c
+where c.cnp = (
+	select client_cnp
+    from clientsNrMedsMap
+    where clientsNrMedsMap.nr_meds = (select max(nr_meds) from clientsNrMedsMap)
+);
+```
+
+<div style="text-align: center;">
+  <img src="./img/11.5.png">
+</div>
+
 ### 12
 ### 13
 ### 14
