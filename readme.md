@@ -139,6 +139,11 @@ Schema este in FN3:
 * nu exista **dependinte tranzitive**(daca `A -> B` si `B -> C`, atunci `A -> C`); un exemplu ar fi cazul in care in tabelul `prescription_medication` ar fi avut si atributul `provider_name`(furnizorul unui anume medicament); concret, `A` este `prescription_id`, `B` este `medication_id` si `C` este `provider_name`
 
 ### 10
+
+> Crearea tabelelor în SQL și inserarea de date coerente în fiecare dintre acestea (minimum 5 înregistrări în fiecare tabel neasociativ; minimum 10 înregistrări în tabelele asociative).
+
+Link-ul catre liniile relevante din fisierul SQL poate fi gasit [aici](https://github.com/Andrei0872/hospital-database-design/blob/master/db/hospital.sql#L126-L269).
+
 ### 11
 ### 12
 ### 13
