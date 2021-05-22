@@ -407,4 +407,47 @@ rollback;
 </div>
 
 ### 13
+
+> Crearea unei secvențe ce va fi utilizată în inserarea înregistrărilor în tabele (punctul 10).
+
+```sql
+/*
+Cum in MySQL nu exista `CREATE SEQUENCE`, am simulat acest feature
+folosind un `WHILE` statement.
+*/
+drop procedure if exists insertMeds;
+
+delimiter $$
+
+create procedure insertMeds()
+begin
+    
+    declare idx int default 12;
+
+    while idx <= 100 do
+        insert into medication(name, provider_name, weight)
+		values(concat('med-', idx), 'provider-X', rand() * 60);
+        
+        set idx = idx + 1;
+    end while;
+
+end$$
+
+delimiter ;
+
+call insertMeds();
+```
+
+<div style="text-align: center;">
+  <img src="./img/13.1.png">
+</div>
+
+<div style="text-align: center;">
+  <img src="./img/13.2.png">
+</div>
+
+<div style="text-align: center;">
+  <img src="./img/13.3.png">
+</div>
+
 ### 14
